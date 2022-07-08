@@ -14,7 +14,7 @@ name: Semaphore PHP Example Pipeline
 agent:
   machine:
     type: e1-standard-2
-    os_image: ubuntu1804
+    os_image: ubuntu2004
 
 global_job_config:
   prologue:
@@ -88,27 +88,6 @@ blocks:
           - npm install
           # Run the unit tests from the phpunit binary in vendor folder
           - ./vendor/bin/phpunit
-
-  - name: "Run Browser tests"
-    task:
-      jobs:
-        - name: laravel dusk
-          commands:
-            - checkout
-            - cp .env.example .env
-            # Create an empty .sqlite DB
-            - touch database/database.sqlite
-            - cache restore
-            - composer install
-            - npm install
-            # Create an application key again.
-            - php artisan key:generate
-            - php artisan dusk:update --detect
-            # Start Laravel's built-in web server so the web driver used by Dusk can connect.
-            # We start the server using the .env.dusk.local environment file that uses SQLITE.
-            - php artisan serve --env=dusk.local --port=8010 &
-            # Run the tests
-            - php artisan dusk
 
   - name: "Run Security Tests"
     task:
