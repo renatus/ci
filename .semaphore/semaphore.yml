@@ -24,6 +24,7 @@ global_job_config:
 # Blocks are the heart of a pipeline and are executed sequentially.
 # Each block has a task that defines one or more jobs. Jobs define the
 # commands to execute.
+# Each block and even job starts in a fresh, isolated environment.
 # See https://docs.semaphoreci.com/article/62-concepts
 blocks:
   - name: "Install Dependencies"
