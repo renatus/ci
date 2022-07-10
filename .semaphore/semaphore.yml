@@ -29,8 +29,6 @@ blocks:
   - name: "Install Dependencies"
     task:
       env_vars:
-        - name: DB_NAME
-          value: "testing"
         - name: APP_ENV
           value: prod
       jobs:
@@ -88,6 +86,11 @@ blocks:
       jobs:
       - name: phpunit
         commands:
+          - checkout
+          - cache restore
+          - composer install
+          - npm install
+
           - sem-service start postgres 14
           - sudo apt-get install -y -qq postgresql-client
           - createdb -U postgres -h 0.0.0.0 $DB_NAME
@@ -96,11 +99,6 @@ blocks:
           - psql -U postgres -h localhost -c "CREATE USER future WITH PASSWORD 'password';"
           - psql -U postgres -h localhost -c "ALTER USER future WITH SUPERUSER;"
           - php artisan migrate --env=testing
-
-          - checkout
-          - cache restore
-          - composer install
-          - npm install
           # Run the unit tests from the phpunit binary in vendor folder
           - ./vendor/bin/phpunit
 
