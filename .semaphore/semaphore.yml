@@ -83,6 +83,10 @@ blocks:
       env_vars:
         - name: DB_NAME
           value: "testing"
+        - name: DB_UNAME
+          value: "future"
+        - name: DB_UPASS
+          value: "password"    
       jobs:
       - name: phpunit
         commands:
@@ -90,7 +94,9 @@ blocks:
           - cache restore
           - composer install
           - npm install
-
+          # Create and seed DB.
+          # Each Semaphore job starts in a fresh, isolated environment.
+          # You have to recreate and reseed DB each time.
           - sem-service start postgres 14
           - sudo apt-get install -y -qq postgresql-client
           - createdb -U postgres -h 0.0.0.0 $DB_NAME
