@@ -26,25 +26,6 @@ global_job_config:
 # commands to execute.
 # See https://docs.semaphoreci.com/article/62-concepts
 blocks:
-  - name: "Databases"
-    task:
-      env_vars:
-        - name: DB_NAME
-          value: "testing"
-        - name: PGPASSWORD
-          value: "password"
-      jobs:
-      - name: PostgreSQL
-        commands:
-          - sem-service start postgres 14
-          - sudo apt-get install -y -qq postgresql-client
-          - createdb -U postgres -h 0.0.0.0 $DB_NAME
-          - psql -h 0.0.0.0 -U postgres -c "\l" | grep $DB_NAME
-          - sem-service status postgres
-          - psql -U postgres -h localhost -c "CREATE USER future WITH PASSWORD 'password';"
-          - psql -U postgres -h localhost -c "ALTER USER future WITH SUPERUSER;"
-          #- createdb -U future -h localhost $DB_NAME
-
   - name: "Install Dependencies"
     task:
       env_vars:
@@ -55,14 +36,6 @@ blocks:
       jobs:
         - name: composer
           commands:
-            - sem-service start postgres 14
-            - sudo apt-get install -y -qq postgresql-client
-            - createdb -U postgres -h 0.0.0.0 $DB_NAME
-            - psql -h 0.0.0.0 -U postgres -c "\l" | grep $DB_NAME
-            - sem-service status postgres
-            - psql -U postgres -h localhost -c "CREATE USER future WITH PASSWORD 'password';"
-            - psql -U postgres -h localhost -c "ALTER USER future WITH SUPERUSER;"
-
             # Checkout code from Git repository. This step is mandatory if the
             # job is to work with your code.
             # Optionally you may use --use-cache flag to avoid roundtrip to
@@ -83,9 +56,6 @@ blocks:
             - cp .env.example .env
             # We need to generate an application key for Laravel to work.
             - php artisan key:generate
-            - psql -h 0.0.0.0 -U postgres -c "\l" | grep $DB_NAME
-            - sem-service status postgres
-            - php artisan migrate --env=testing
 
   - name: "Run Code Analysis"
     task:
@@ -118,6 +88,15 @@ blocks:
       jobs:
       - name: phpunit
         commands:
+          - sem-service start postgres 14
+          - sudo apt-get install -y -qq postgresql-client
+          - createdb -U postgres -h 0.0.0.0 $DB_NAME
+          - psql -h 0.0.0.0 -U postgres -c "\l" | grep $DB_NAME
+          - sem-service status postgres
+          - psql -U postgres -h localhost -c "CREATE USER future WITH PASSWORD 'password';"
+          - psql -U postgres -h localhost -c "ALTER USER future WITH SUPERUSER;"
+          - php artisan migrate --env=testing
+
           - checkout
           - cache restore
           - composer install
