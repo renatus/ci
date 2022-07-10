@@ -26,6 +26,22 @@ global_job_config:
 # commands to execute.
 # See https://docs.semaphoreci.com/article/62-concepts
 blocks:
+  - name: "Databases"
+    task:
+      env_vars:
+        - name: DB_NAME
+          value: "testing"
+      jobs:
+      - name: PostgreSQL
+        commands:
+          - sem-service start postgres 14
+          - sudo apt-get install -y -qq postgresql-client
+          #- createdb -U postgres -h 0.0.0.0 $DB_NAME
+          #- psql -h 0.0.0.0 -U postgres -c "\l" | grep $DB_NAME
+          #- sem-service status postgres
+          - psql -U postgres -h localhost -c "CREATE USER future WITH PASSWORD 'password';"
+          - createdb -U future -h 0.0.0.0 $DB_NAME
+
   - name: "Install Dependencies"
     task:
       env_vars:
