@@ -31,8 +31,8 @@ blocks:
       env_vars:
         - name: DB_NAME
           value: "testing"
-        #- name: PGPASSWORD
-        #  value: "password"
+        - name: PGPASSWORD
+          value: "password"
       jobs:
       - name: PostgreSQL
         commands:
@@ -42,8 +42,8 @@ blocks:
           #- psql -h 0.0.0.0 -U postgres -c "\l" | grep $DB_NAME
           #- sem-service status postgres
           - psql -U postgres -h localhost -c "CREATE USER future WITH PASSWORD 'password';"
-          - psql -U postgres -h localhost -c "ALTER USER future WITH SUPERUSER;"
-          - createdb -U postgres -h 0.0.0.0 $DB_NAME
+          #- psql -U postgres -h localhost -c "ALTER USER future WITH SUPERUSER;"
+          - createdb -U future -h localhost $DB_NAME
 
   - name: "Install Dependencies"
     task:
