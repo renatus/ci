@@ -99,7 +99,22 @@ blocks:
 
   - name: "Run Unit tests"
     task:
+      env_vars:
+        - name: DB_NAME
+          value: "testing"
       jobs:
+      - name: PostgreSQL
+        commands:
+          - sem-service start postgres 14
+          - sudo apt-get install -y -qq postgresql-client
+          #- createdb -U postgres -h 0.0.0.0 $DB_NAME
+          #- psql -h 0.0.0.0 -U postgres -c "\l" | grep $DB_NAME
+          #- sem-service status postgres
+          - psql -U postgres -h localhost -c "CREATE USER future WITH PASSWORD 'password';"
+          - psql -U postgres -h localhost -c "ALTER USER future WITH SUPERUSER;"
+          - createdb -U future -h localhost $DB_NAME
+          - php artisan migrate
+
       - name: phpunit
         commands:
           - checkout
