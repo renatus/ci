@@ -50,7 +50,8 @@ blocks:
             - npm install
             # Store the /vendor and node_modules folders into cache for later use.
             - cache store
-            # We are setting up the .env file from our example file which contains Semaphore DB data and proper app URL
+            # Use Semaphore-tailored .env.testing file
+            # You may need to set up different app and DB ports, for example.
             - cp .env.testing.semaphoreci .env.testing
             # We need to generate an application key for Laravel to work.
             - php artisan key:generate
@@ -94,6 +95,9 @@ blocks:
           - cache restore
           - composer install
           - npm install
+          # Use Semaphore-tailored .env.testing file
+          # You may need to set up different app and DB ports, for example.
+          - cp .env.testing.semaphoreci .env.testing
           # Create and seed DB.
           # Each Semaphore job starts in a fresh, isolated environment.
           # You have to recreate and reseed DB each time.
