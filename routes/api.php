@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NotebookController;
@@ -16,36 +15,31 @@ use App\Http\Controllers\NotebookController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::post('/v1/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
-
-/**
- * Public routes
- */
+//Public routes
 Route::group([
     'prefix' => 'v1'
 ], function () {
-    // User registration endpoint
+    // Add user
     Route::post('/register', [AuthController::class, 'register']);
-    // User login endpoint
+    // Log user in
     Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/notebook', [NotebookController::class, 'index']);
+    // Get particular entry
     Route::get('/notebook/{id}', [NotebookController::class, 'show']);
-    Route::get('/notebook/search/{name}', [NotebookController::class, 'search']);
+    // Get all entries
+    Route::get('/notebook', [NotebookController::class, 'index']);
 });
 
-/**
- * Protected routes
- */
+//Protected routes
 Route::group([
     'prefix' => 'v1',
     'middleware' => ['auth:sanctum']
 ], function () {
-    Route::post('/notebook', [NotebookController::class, 'add']);
+    // Modify entry
     Route::post('/notebook/{id}', [NotebookController::class, 'update']);
+    // Add entry
+    Route::post('/notebook', [NotebookController::class, 'add']);
+    // Delete entry
     Route::delete('/notebook/{id}', [NotebookController::class, 'destroy']);
+    // Log user out
     Route::get('/logout', [AuthController::class, 'logout']);
 });
