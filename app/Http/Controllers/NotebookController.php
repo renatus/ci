@@ -164,6 +164,7 @@ class NotebookController extends Controller
                 Storage::delete($notebook['picture']);
             }
             $fileDbPath = NotebookController::saveFile($request, $id);
+        // Leave this line PSR-2-compliant
         } elseif (array_key_exists('picture', $validatedData) &&
             !$validatedData['picture'] &&
             $notebook['picture'] &&
