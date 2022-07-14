@@ -164,8 +164,7 @@ class NotebookController extends Controller
                 Storage::delete($notebook['picture']);
             }
             $fileDbPath = NotebookController::saveFile($request, $id);
-        } elseif (
-            array_key_exists('picture', $validatedData) &&
+        } elseif (array_key_exists('picture', $validatedData) &&
             !$validatedData['picture'] &&
             $notebook['picture'] &&
             Storage::exists($notebook['picture'])
